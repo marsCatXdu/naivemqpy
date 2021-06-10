@@ -5,13 +5,12 @@
 # @FileName: main.py
 # @Software: myTinyPyMQ
 
-# 尽量遵循 Google 的编码风格指引：【指引要求每行不超过 80 字符，这里就先忽略了。。。。。】
+# 尝试遵循 Google 的编码风格指引：【指引要求每行不超过 80 字符，这里就先忽略了。。。。。】
 # https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/
 
 import socket
 import argparse
 import os
-import signal
 import sys
 import json
 from collections import deque
