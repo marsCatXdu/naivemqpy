@@ -21,7 +21,7 @@ CMD_NAME = os.path.basename(__file__)
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Super naive tiny message queue suite", epilog=f"example: os.path.basename(__file__) -bin /usr/bin/openssh")
+        description="Super naive tiny message queue suite", epilog=f"example: os.path.basename(__file__) -role mq")
     parser.add_argument('-v', action='version',
                         version='NaiveMQ'+TOOL_VERSION)
     parser.add_argument(
