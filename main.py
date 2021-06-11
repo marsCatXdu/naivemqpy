@@ -143,7 +143,7 @@ class UDPSender(object):
 def main():
     global ARGS
     ARGS = parse_args()
-    udpListener = None
+    udpListener = None                                      # 提前声明，确保变量生命周期及作用域是整个 main()
     udpSender = None
     messageQueue = None
 
@@ -163,7 +163,7 @@ def main():
                     messageQueue.appendMsg(commitMsg)
                 elif data['type']=='response':
                     print('2: '+data['type'])
-            except KeyboardInterrupt:                       # 处理 Ctrl+C 退出的情况
+            except KeyboardInterrupt as ki:                 # 处理 Ctrl+C 退出的情况. as 是给异常取别名，可根据需要使用
                 print("\nCtrl+C pressed. Terminate.")
                 sys.exit(1)
         
@@ -175,5 +175,8 @@ def main():
         pass
 
 
+# 程序的主要功能应该放在一个单独的 main() 中
+# 这样可以避免该文件被其他代码导入时的代码意外执行
+# 虽然放在这里没什么实际用途，但是是个好习惯，也是符合 Google 规范要求的
 if __name__ == "__main__":
     main()
