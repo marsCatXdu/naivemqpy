@@ -66,8 +66,8 @@ class CommitMsg(MsgBase):                   # 继承的写法
     
     def obj_to_json(self):
         data = [{'auth': self.__auth, 'type': self.type, 'capacity':self.capacity}]
-        jsonStr = json.dumps(data)
-        return jsonStr
+        json_str = json.dumps(data)
+        return json_str
 
 
 class ResponseMsg(MsgBase):
@@ -80,18 +80,18 @@ class ResponseMsg(MsgBase):
 
     def obj_to_json(self):
         data = [{'auth': self.__auth, 'type': self.type, 'capacity':self.capacity}]
-        jsonStr = json.dumps(data)
-        return jsonStr
+        json_str = json.dumps(data)
+        return json_str
 
 class MsgQueue(object):
 
     def __init__(self):
-        self.msgQueue = deque([])           # python 标准库里面的双向队列
+        self.msg_queue = deque([])           # python 标准库里面的双向队列
 
     def appendMsg(self, msg):
-        self.msgQueue.append(msg)
-        print("current msgQueue: ")
-        print(self.msgQueue)
+        self.msg_queue.append(msg)
+        print("current msg_queue: ")
+        print(self.msg_queue)
     
 
 class UDPListener(object):
@@ -128,39 +128,39 @@ class UDPSender(object):
     def __init__(self) -> None:
         pass
 
-    def sendUDP(self, msg: str, remote_ip: str, remote_port: int=30303):
-        bytesToSend         = str.encode(msg)
-        serverAddressPort   = (remote_ip, remote_port)
-        bufferSize          = 1024
+    def send_UDP(self, msg: str, remote_ip: str, remote_port: int=30303):
+        bytes_to_send = str.encode(msg)
+        server_address_port = (remote_ip, remote_port)
+        buffer_size = 1024
 
-        UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        UDPClientSocket.sendto(bytesToSend, serverAddressPort)
-        msgFromServer = UDPClientSocket.recvfrom(bufferSize)
-        msg = "Message from Server {}".format(msgFromServer[0])
+        UDP_client_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+        UDP_client_socket.sendto(bytes_to_send, server_address_port)
+        msg_from_server = UDP_client_socket.recvfrom(buffer_size)
+        msg = "Message from Server {}".format(msg_from_server[0])
         print(msg)
 
 
 def main():
     global ARGS
     ARGS = parse_args()
-    udpListener = None                                      # 提前声明，确保变量生命周期及作用域是整个 main()
-    udpSender = None
-    messageQueue = None
+    udp_listener = None                                      # 提前声明，确保变量生命周期及作用域是整个 main()
+    udp_sender = None
+    message_queue = None
 
     if not ARGS.role:
         print("未选择角色，退出。可选：mq, commiter, consumer")
         sys.exit(1)
 
     if ARGS.role=="mq":
-        udpListener = UDPListener()
-        messageQueue = MsgQueue()
+        udp_listener = UDPListener()
+        message_queue = MsgQueue()
         while(1):
             try:
-                receivedMsg = udpListener.listenUDP()[0]    # 收到的消息（json string）
+                receivedMsg = udp_listener.listenUDP()[0]    # 收到的消息（json string）
                 data = json.loads(receivedMsg)
                 if data['type']=='commit':
-                    commitMsg = CommitMsg(auth=data['auth'], capacity=data['capacity'])
-                    messageQueue.appendMsg(commitMsg)
+                    commit_msg = CommitMsg(auth=data['auth'], capacity=data['capacity'])
+                    message_queue.appendMsg(commit_msg)
                 elif data['type']=='response':
                     print('2: '+data['type'])
             except KeyboardInterrupt as ki:                 # 处理 Ctrl+C 退出的情况. as 是给异常取别名，可根据需要使用
@@ -168,8 +168,8 @@ def main():
                 sys.exit(1)
         
     elif ARGS.role=="commiter":
-        udpSender = UDPSender()
-        udpSender.sendUDP('{"auth":"lijingwei","type":"commit","capacity":[{"anything":"???wtf"},{"anything":"???wtf"}]}', "127.0.0.1")
+        udp_sender = UDPSender()
+        udp_sender.send_UDP('{"auth":"lijingwei","type":"commit","capacity":[{"anything":"???wtf"},{"anything":"???wtf"}]}', "127.0.0.1")
 
     elif ARGS.role=="consumer":
         pass
