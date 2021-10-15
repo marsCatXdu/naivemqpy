@@ -8,6 +8,8 @@
 # 尝试遵循 Google 的编码风格指引：【指引要求每行不超过 80 字符，这里就先忽略了。。。。。】
 # https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/
 
+import config
+
 import socket
 import argparse
 import os
@@ -34,7 +36,7 @@ class MsgBase(object):             # 如果一个类不继承自其它类, 就�
     """通用的基础消息类
 
     【这里写长一些的关于该类的介绍，可以写多行】
-    该类定义了本消息队列中通用的消息。消息生产者发往队列的消息（CommitMessage）、消息消费者请求
+    该类定义了本消息队列中通用的消息。消息生产者发往队列的消息（CommitMsg）、消息消费者请求
     取出消息的消息（）、生产者及消费者
 
     Attributes:
@@ -146,6 +148,9 @@ def main():
     udp_listener = None                                      # 提前声明，确保变量生命周期及作用域是整个 main()
     udp_sender = None
     message_queue = None
+
+    if(config.SystemConfig.linux_dist_info):
+        print(config.SystemConfig.linux_dist_info)
 
     if not ARGS.role:
         print("未选择角色，退出。可选：mq, commiter, consumer")
