@@ -3,7 +3,7 @@
 
 # @Author  : lijingwei (marscatcn@live.com)
 # @FileName: main.py
-# @Software: myTinyPyMQ
+# @Software: NaiveMQ
 
 # 尝试遵循 Google 的编码风格指引：【指引要求每行不超过 80 字符，这里就先忽略了。。。。。】
 # https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_style_rules/
@@ -26,7 +26,7 @@ def parse_args():
     parser.add_argument('-v', action='version',
                         version='NaiveMQ'+TOOL_VERSION)
     parser.add_argument(
-        '-role', help='set instance role')
+        '--role', help='set instance role')
     
     return parser.parse_args()
 
@@ -97,15 +97,19 @@ class MsgQueue(object):
     
 
 class UDPListener(object):
+    """UDP 监听器类
+
+    在指定端口监听所有的 UDP 请求
+    """
 
     def __init__(self, port:int=30303):     # 可以用这种写法限制参数类型（可选）
-        self.port=30303
+        self.port = port
 
     def listenUDP(self) -> tuple:
         """ 在当前线程阻塞监听 UDP 端口
 
         Args:
-            port: 监听的本地端口号，默认 30303
+            port: 监听的本地端口号，默认 30303 （致敬 Ethereum ）
 
         Returns:
             存储了 data 和 remoteEndpoint 的 tuple，其中 data 是 str，remoteEndpoint 仍然是个 tuple
@@ -149,8 +153,8 @@ def main():
     udp_sender = None
     message_queue = None
 
-    if(config.SystemConfig.linux_dist_info):
-        print(config.SystemConfig.linux_dist_info)
+    # if(config.SystemConfig.linux_dist_info):
+        # print(config.SystemConfig.linux_dist_info)
 
     if not ARGS.role:
         print("未选择角色，退出。可选：mq, commiter, consumer")
